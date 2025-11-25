@@ -1,14 +1,24 @@
-\documentclass{article}
-\usepackage{graphicx} % Required for inserting images
+\documentclass[12pt]{article}
+
+
+\usepackage[utf8]{inputenc} % Handles special characters
+\usepackage[T1]{fontenc}    % Proper font encoding
+\usepackage[english]{babel} % English language support
+\usepackage[a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm]{geometry} % Margins
+\usepackage{enumitem}
+\setlist[itemize]{label=-}
+% ------------------------------------------------
+
+
+\usepackage{graphicx} 
 \usepackage{float}
 \usepackage{subcaption}
 \usepackage{amsmath}
 \usepackage{url}
 
-
 \title{Understanding Urban Transit Through Network Science: An Analysis of Milan and Barcelona}
 
-\author {Amir Masoud Aghaei, Artificial Intelligence,\\Gita Javadi, Artificial Intelligence, 0001158007\\
+\author {Amir Masoud Aghaei, Artificial Intelligence, 0001165333\\Gita Javadi, Artificial Intelligence, 0001158007\\
 Omid Nejati, Artificial Intelligence, 0001154905\\ Alireza Shahidiani, Artificial Intelligence, 0001154402 }
 
 \date{November 2025}
@@ -41,19 +51,41 @@ The main contribution of this study is to provide a quantitative, topology-based
 
 \section{Datasets}
 
-This project relies on General Transit Feed Specification (GTFS) datasets describing the public transportation systems of Milan and Barcelona. GTFS is an open, standardized data format that provides detailed information on transit stops, routes, trips, schedules, and service calendars, making it especially suitable for systematic and reproducible transport network analysis.~\cite{c}
+This project relies on General Transit Feed Specification (GTFS) datasets describing the public transportation systems of Milan and Barcelona. GTFS is an open, standardized data format that provides detailed information on transit stops, routes, trips, schedules, and service calendars, making it especially suitable for systematic and reproducible transport network analysis.~\cite{b}
 
-The datasets used in this study were obtained from the Transitland platform, a global aggregator of GTFS feeds that provides unified access to data published by transit agencies worldwide~\cite{d}. For Barcelona, we used the official GTFS feed published by Transports Metropolitans de Barcelona (TMB), while for Milan we used the feed provided by Azienda Trasporti Milanesi (ATM). The datasets were downloaded in their original format, requiring no digitization, and ensuring fidelity to the official transit systems.
+The datasets used in this study were obtained from the Transitland platform, a global aggregator of GTFS feeds that provides unified access to data published by transit agencies worldwide~\cite{c}. For Barcelona, we used the official GTFS feed published by Transports Metropolitans de Barcelona (TMB)~\cite{d}, while for Milan we used the feed provided by Azienda Trasporti Milanesi (ATM)~\cite{e}. The datasets were downloaded in their original format, requiring no digitization, and ensuring fidelity to the official transit systems.
 
-All GTFS files (such as \texttt{stops.txt}, \texttt{routes.txt}, and \texttt{trips.txt} ) were processed using Python. Data handling and preprocessing were performed with \texttt{pandas} DataFrames~\cite{e}, which provided a flexible framework for merging, filtering, and manipulating the interconnected GTFS tables. To construct the network representations, we modeled stops as nodes and scheduled trips as edges. When multiple trips connected the same pair of stops, the number of weekly services was aggregated and used as an edge weight to approximate service frequency.
+All GTFS files (such as \texttt{stops.txt}, \texttt{routes.txt}, and \texttt{trips.txt} ) were processed using Python. Data handling and preprocessing were performed with \texttt{pandas} DataFrames~\cite{f}, which provided a flexible framework for merging, filtering, and manipulating the interconnected GTFS tables. To construct the network representations, we modeled stops as nodes and scheduled trips as edges. When multiple trips connected the same pair of stops, the number of weekly services was aggregated and used as an edge weight to approximate service frequency.
 
-Network computations—such as centrality metrics, efficiency measures, and community detection—were performed using the \texttt{NetworkX} library. This enabled the construction of weighted, undirected graphs for each city and ensured a consistent methodology for comparing network structures. Spatial visualizations were created using \texttt{geopandas}, \texttt{folium}, and \texttt{matplotlib}, allowing accurate mapping of transit stops and connections in their real geographic context.
+Network computations—such as centrality metrics, efficiency measures, and community detection—were performed using the \texttt{NetworkX} library~\cite{g}. This enabled the construction of weighted, undirected graphs for each city and ensured a consistent methodology for comparing network structures. Spatial visualizations were created using \texttt{geopandas}, \texttt{folium}, and \texttt{matplotlib}, allowing accurate mapping of transit stops and connections in their real geographic context.
 
 The datasets sourced from Transitland are openly available and do not require any special permissions. Their standardized format, combined with well-established Python tools, ensures a fully reproducible workflow, allowing other researchers to replicate or extend this study without ambiguity.
 
 
+\section{Validity and Reliability}
 
-\section{Advanced Topological Metrics}
+To ensure the robustness of our Social Network Analysis (SNA), we evaluated the validity of our results through three key dimensions: data integrity, algorithmic correctness, and real-world ground truthing.
+
+\subsection{Data Integrity and Limitations}
+The study relies on GTFS (General Transit Feed Specification) data, which is the industry standard for public transport schedules. While this ensures high accuracy regarding the \textit{planned} network topology, it presents specific limitations. The analysis treats the network as a static graph based on weekly frequencies, meaning it does not account for real-time disruptions, delays, or passenger congestion levels. Additionally, large transit hubs (such as \textit{Milano Centrale}) are treated as single aggregated nodes to accurately reflect transfer potential, though some intra-station granularity may be lost.
+
+\subsection{Algorithmic Verification}
+   We performed specific mathematical checks to ensure the metrics were calculating correctly: 
+
+\begin{itemize}
+   \item \textbf{Assortativity (The "Rich-Club" Effect):} Both networks exhibited positive assortativity (Barcelona: $0.129$, Milan: $0.188$). This is a significant finding. While many biological or technological networks are disassortative (hubs connect to small nodes), our results indicate that the Metro systems of Barcelona and Milan follow a "Rich-Club" topology, where major hubs preferentially connect to other major hubs. This structure creates a resilient "backbone" that keeps the network functional even if peripheral branches are cut.
+   \item \textbf{Modularity Scores:} The community detection algorithm yielded exceptionally high modularity scores (Barcelona: $0.89$, Milan: $0.92$), confirming that the detected "zones" are statistically significant structural clusters rather than random artifacts.
+\end{itemize}
+
+\subsection{Ground Truthing (External Validity)}
+The most significant test of validity is whether the mathematical results correspond to physical reality.
+\begin{itemize}
+    \item \textbf{Milan (Central Hubs):} The nodes with the highest Eigenvector Centrality were identified as \textit{Centrale FS}, \textit{Garibaldi FS}, and \textit{Zara}. These correspond exactly to the city's primary railway and metro interchange hubs, confirming the algorithm correctly identified the "center of gravity" of the network.
+    \item \textbf{Barcelona (Strategic Corridors):} Interestingly, for Barcelona, the algorithm assigned high influence to the \textit{L9 Sud corridor} (nodes: \textit{Parc Nou, Aeroport T2, Fira}). This aligns with the line's strategic role as a high-capacity connector linking the Airport and Trade Fair centers to the rest of the grid, validating the metric's ability to detect economically critical infrastructure.
+\end{itemize}
+
+
+\section{Measures and Results}
 
 In this study, the analysis framework is organized into four distinct groups of 
 network measures, each capturing a different structural or functional 
@@ -81,13 +113,9 @@ characteristic of the transport system:
 
     \item \textbf{Robustness Measures (2 metrics):}  
     These assess resilience under failures or attacks, including robustness 
-    under random node removal and under targeted (degree-based) node removal.  
+    under random node removal and under targeted (degree-based) node removal. 
 \end{enumerate}
 
-
-
-
-\section{Results and Discussion}
 
 \subsection{Centrality Measures}
 
@@ -169,9 +197,6 @@ centrality values, reflecting several medium-size hubs spread across the central
 corridor. Milan’s distribution is more concentrated, with a few very dominant
 stops such as \textit{Comasina M3} and \textit{Stazione Centrale}.
 
-% -------------------------------------------------------
-% INSERTED ACADEMIC CONTEXT PARAGRAPH (FROM ARTICLE)
-% -------------------------------------------------------
 These patterns are consistent with empirical findings reported in studies of large
 public transport networks. Von Ferber et al.\ \cite{vonferber} show that PTNs typically exhibit
 heterogeneous degree distributions characterised by many low-degree nodes and a
@@ -180,8 +205,6 @@ these distributions often follow exponential or power-law decay, reflecting the
 structural contrast between dense urban cores and sparsely connected peripheral
 areas. The behaviour observed in Barcelona and Milan aligns closely with these
 general characteristics.
-
-% -------------------------------------------------------
 
 \begin{figure}[ht]
     \centering
@@ -403,8 +426,6 @@ to disruptions. Barcelona offers a more evenly distributed accessibility pattern
 within its central grid but experiences more pronounced declines toward its 
 geographically constrained outskirts.
 
-
-
 \subsubsection{Eigenvector Centrality: Core vs. Corridor Influence}
 The Eigenvector Centrality analysis revealed a fundamental difference in how influence is distributed across the two cities:
 
@@ -416,7 +437,7 @@ The Eigenvector Centrality analysis revealed a fundamental difference in how inf
 
 \begin{figure}[H]
     \centering
-   
+    
     \begin{subfigure}{0.45\textwidth}
         \centering
         \includegraphics[width=\linewidth]{eigen1.png} 
@@ -430,7 +451,7 @@ The Eigenvector Centrality analysis revealed a fundamental difference in how inf
     \end{subfigure}
     
     \caption{Comparison of Eigenvector Centrality in Barcelona and Milan.}
-    \label{fig:comparison_map}
+    \label{fig:eigen_comparison}
 \end{figure}
 
 
@@ -440,7 +461,7 @@ The Eigenvector Centrality analysis revealed a fundamental difference in how inf
 The Edge Betweenness analysis highlighted the physical vulnerabilities of the networks:
 
 \begin{itemize}
-    \item \textbf{Critical Bridges:} In both cities, the algorithm identified specific ``arteries'' (visualized in red/yellow in Figure \ref{fig:betweenness}) that carry a disproportionate amount of passenger flow. These edges represent the unique shortest paths for substantial portions of the population.
+    \item \textbf{Critical Bridges:} In both cities, the algorithm identified specific ``arteries'' (visualized in red/yellow in Figure \ref{fig:edge_betweenness}) that carry a disproportionate amount of passenger flow. These edges represent the unique shortest paths for substantial portions of the population.
     \item \textbf{Redundancy:} Barcelona’s grid-like mesh resulted in a more distributed set of critical edges. In contrast, Milan showed higher pressure on the radial lines entering the city center, suggesting that a failure in one of Milan's central ``spokes'' would have a more catastrophic impact on global efficiency than a similar failure in Barcelona's mesh.
 \end{itemize}
 
@@ -460,7 +481,7 @@ The Edge Betweenness analysis highlighted the physical vulnerabilities of the ne
     \end{subfigure}
     
     \caption{Edge Betweenness Centrality illustrating critical transport bottle-necks.}
-    \label{fig:comparison_map}
+    \label{fig:edge_betweenness}
 \end{figure}
 
 
@@ -536,7 +557,7 @@ To visualize where these "core" nodes are located physically, we mapped the stat
 
 \subsubsection{Modularity (Community Detection)}
 
-To understand the natural substructures of the transit networks, we applied the \textbf{Greedy Modularity} algorithm. This metric quantifies how well a network divides into distinct communities (clusters). A high modularity score ($Q$) implies that stations within a group are densely connected to each other but sparsely connected to stations outside the group. In the context of urban transit, these communities often correspond to specific transit lines, geographic zones, or neighborhoods.
+To understand the natural substructures of the transit networks, modularity-based community detection was applied. This analysis groups stops that are more densely connected to each other than to the rest of the network, revealing functional clusters that often correspond to geographic neighborhoods or distinct transit lines. In both cities, communities align closely with major transport corridors and administrative zones, illustrating the interplay between urban planning and network topology.
 
 \begin{figure}[h!]
     \centering
@@ -569,18 +590,8 @@ Milan         & 50                             & 0.9273                    \\ \h
 \label{tab:modularity}
 \end{table}
 
-\paragraph{Interpretation:}
-The results (Table \ref{tab:modularity} and Figure \ref{fig:modularity_plots}) indicate that both cities possess an exceptionally high modularity structure, with $Q$ values approaching the theoretical maximum of 1. 
 
-\begin{itemize}
-    \item \textbf{Milan ($Q \approx 0.93$):} The higher modularity and larger number of communities (50) suggest a network that is highly compartmentalized. This indicates a system where transit lines or local zones operate somewhat independently, with fewer "bridge" connections linking different clusters compared to Barcelona.
-    \item \textbf{Barcelona ($Q \approx 0.89$):} While still highly modular, Barcelona has fewer communities (40) and a slightly lower $Q$ score. This suggests a slightly more integrated network where the boundaries between different transit zones or lines are somewhat more fluid than in Milan.
-\end{itemize}
-
-Overall, the high modularity in both systems reflects the nature of public transport, where stations are often organized linearly along routes, creating strong internal links and fewer cross-route connections.
-
-
-\subsection{Eﬀiciency Measures}
+\subsection{Efficiency Measures}
 
 \subsubsection{Assortativity and Network Resilience}
 A key finding of this study is the mixing pattern of the networks. Both cities exhibited \textbf{positive assortativity coefficients}
@@ -590,6 +601,112 @@ r_{\text{Milan}} \approx 0.118
 \]
 
 This result is non-trivial, as many transport networks (such as airline routes) are typically disassortative. The positive values indicate a \textbf{``Rich-Club'' topology}: major hubs in both Barcelona and Milan tend to connect directly to other major hubs. This structure enhances resilience, as the core ``backbone'' of the city remains connected even if peripheral suburban branches are disrupted.
+
+\subsubsection{Global Efficiency and Network Statistics}
+
+To further assess the macro-scale performance of the transportation systems, we analyzed Global Efficiency  and basic network statistics. These metrics describe the ease of information flow across the entire system and quantify the density of connections relative to the network size.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{efficiency.png}
+        \caption{Global Efficiency Comparison}
+        \label{fig:efficiency}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{statistics.png}
+        \caption{Normalized Network Statistics}
+        \label{fig:statistics}
+    \end{subfigure}
+    \caption{Global efficiency and normalized network statistics for Barcelona and Milan.}
+    \label{fig:eff_stats}
+\end{figure}
+
+\textbf{Global Efficiency:} Figure~\ref{fig:efficiency} presents the Global Efficiency for both networks, a measure inversely related to the average shortest path length between all pairs of nodes. Barcelona exhibits a notably higher global efficiency ($E_{glob} \approx 0.040$) compared to Milan ($E_{glob} \approx 0.030$). This suggests that, on average, passengers can traverse the Barcelona network with fewer transfers or shorter path lengths relative to the system's size. Despite Milan's strong centralization and high-degree hubs, the overall navigational efficiency is lower, likely due to the sheer size of the network and the longer path lengths required to connect peripheral nodes to the core.
+
+\textbf{Network Statistics:} The normalized statistics in Figure~\ref{fig:statistics} provide context for these efficiency scores. While Milan has a higher absolute number of nodes and edges (represented by the orange bars reaching 1.0), Barcelona maintains a competitive average degree. The normalized comparison highlights that while Milan is the larger system, it is not necessarily the more cohesive one relative to its scale.
+
+To understand why Barcelona achieves higher efficiency despite being a smaller network, we examined the relationship between network size and connectivity density.
+
+\begin{figure}[H]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{network_size.png}
+        \caption{Network Size: Stops vs Connections}
+        \label{fig:net_size}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{network_connectivity.png}
+        \caption{Connectivity Metrics}
+        \label{fig:connectivity}
+    \end{subfigure}
+    \caption{Comparison of network size and connectivity density.}
+    \label{fig:size_conn}
+\end{figure}
+
+\textbf{Network Size (Figure~\ref{fig:net_size}):} Milan is significantly larger, with 4,913 stops compared to Barcelona's 2,771, and 6,118 connections versus 3,584. Large networks often suffer from reduced global efficiency unless the density of connections increases disproportionately to the number of nodes.
+
+\textbf{Connectivity (Figure~\ref{fig:connectivity}):} The connectivity metrics reveal the structural advantage of Barcelona. Despite having fewer nodes, Barcelona possesses a higher Average Degree ($2.59$ vs $2.49$) and a slightly higher number of Edges per Node ($1.29$ vs $1.25$). Most significantly, the Density of the Barcelona network ($0.47 \times 10^{-3}$) is nearly double that of Milan ($0.25 \times 10^{-3}$). This higher density implies a more tightly knit fabric where stops are better interconnected locally.
+
+In conclusion, while Milan operates a massive network serving a wider geographic area, it is "spread thinner," resulting in lower global efficiency. Barcelona’s network is more compact and dense, facilitating more efficient global transport despite covering fewer stops.
+
+\subsubsection{Average Path Length Analysis}
+
+This section analyzes the distribution of shortest path lengths between all pairs of stops in the network. While Global Efficiency provides a single summary score, decomposing the path lengths reveals the structural "cost" of travel in terms of transfers or hops.
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{length_metrics.png}
+        \caption{Path Length Metrics}
+        \label{fig:len-metrics}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{length_dist.png}
+        \caption{Path Length Distribution}
+        \label{fig:len-dist}
+    \end{subfigure}
+    \caption{Comparison of path length metrics and frequency distribution.}
+    \label{fig:len-comparison-1}
+\end{figure}
+
+\textbf{Metrics and Frequency Distribution}
+As shown in Figure \ref{fig:len-comparison-1}, there is a distinct gap in navigational cost between the two cities. The bar chart (Figure \ref{fig:len-metrics}) highlights that the \textbf{Average Path Length} in Milan ($\approx 40$ stops) is significantly higher than in Barcelona ($\approx 31$ stops). This difference implies that a typical journey in Milan requires traversing roughly 30\% more nodes than a comparable journey in Barcelona.
+
+The histogram (Figure \ref{fig:len-dist}) elucidates the shape of this disparity. Barcelona’s distribution (blue) is shifted to the left, with a sharp peak around 20–30 stops, indicating a highly efficient core where most destinations are reachable within a moderate number of hops. In contrast, Milan’s distribution (green) is not only shifted to the right but is also wider (higher variance). This "flatter" distribution suggests less consistency in travel costs; while some trips in Milan are short, a significant portion of the network requires long, multi-leg journeys, likely due to the radial structure forcing peripheral-to-peripheral travelers to pass through the center.
+
+\begin{figure}[ht]
+    \centering
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{length_comparison1.png}
+        \caption{Cumulative Distribution}
+        \label{fig:len-cumulative}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{length_comparison2.png}
+        \caption{Path Length Box Plot}
+        \label{fig:len-boxplot}
+    \end{subfigure}
+    \caption{Cumulative distribution and box plot of path lengths.}
+    \label{fig:len-comparison-2}
+\end{figure}
+
+\textbf{Cumulative Distribution and Variability}
+The Cumulative Distribution Function (CDF) in Figure \ref{fig:len-cumulative} reinforces the efficiency gap. Barcelona’s curve rises much faster, reaching near 100\% probability at shorter path lengths than Milan. This dominance indicates that for any given path length threshold $x$, a passenger in Barcelona is more likely to reach their destination within $x$ stops than a passenger in Milan.
+
+Finally, the Box Plot (Figure \ref{fig:len-boxplot}) visualizes the variance and outliers. While Barcelona has a lower median, both cities exhibit a significant number of extreme outliers (black circles), with some path lengths reaching nearly 120 stops. These outliers likely represent remote, poorly connected suburban branches that require excessive transfers to reach the rest of the network. However, the interquartile range (the box) is tighter for Barcelona, confirming that the central 50\% of journeys are more consistent in length compared to the broader spread observed in Milan.
 
 \subsection{Robustness Measures}
 
@@ -628,35 +745,10 @@ Targeted Betweenness (Red)      & 0.202                  & 0.163              \\
 \end{table}
 
 The analysis reveals a classic property of scale-free networks: they are robust to errors but fragile to attacks.
-
 \begin{itemize}
     \item \textbf{Random vs. Targeted (General):} In both cities, the networks degrade slowly under random removal (blue lines), maintaining connectivity even after 20-30\% of stations fail. However, under a targeted Degree attack (green lines), the networks collapse almost instantly. Removing just the top 5-10\% of hubs destroys the system's global connectivity.
-    
     \item \textbf{Barcelona's Structural Integration:} Barcelona is slightly more robust overall (AUC 0.205 vs 0.184). Notably, Barcelona is highly resistant to Betweenness attacks (Red line). The AUC for Betweenness (0.202) is nearly identical to Random removal (0.205). This suggests that Barcelona has fewer "critical bridges" or bottlenecks; if a bridge is removed, there are likely alternative paths connecting the communities.
-    
     \item \textbf{Milan's Vulnerability:} Milan shows a sharper decline under Betweenness attacks (Red line drops to 0.163). This aligns with our earlier Modularity findings ($Q=0.93$); Milan is more compartmentalized. Because the communities are so distinct, cutting the specific stations that bridge these communities causes the network to fracture faster than in Barcelona.
-\end{itemize}
-
-\section{Validity Analysis}
-
-To ensure the robustness of our Social Network Analysis (SNA), we evaluated the validity of our results through three key dimensions: data integrity, algorithmic correctness, and real-world ground truthing. 
-
-\subsection{Data Integrity and Limitations}
-The study relies on GTFS (General Transit Feed Specification) data, which is the industry standard for public transport schedules. While this ensures high accuracy regarding the \textit{planned} network topology, it presents specific limitations. The analysis treats the network as a static graph based on weekly frequencies, meaning it does not account for real-time disruptions, delays, or passenger congestion levels. Additionally, large transit hubs (such as \textit{Milano Centrale}) are treated as single aggregated nodes to accurately reflect transfer potential, though some intra-station granularity may be lost. 
-
-\subsection{Algorithmic Verification}
-   We performed specific mathematical checks to ensure the metrics were calculating correctly: 
-
-\begin{itemize}
-   \item \textbf{Assortativity (The "Rich-Club" Effect):} Both networks exhibited positive assortativity (Barcelona: $0.129$, Milan: $0.188$).  This is a significant finding. While many biological or technological networks are disassortative (hubs connect to small nodes), our results indicate that the Metro systems of Barcelona and Milan follow a "Rich-Club" topology, where major hubs preferentially connect to other major hubs. This structure creates a resilient "backbone" that keeps the network functional even if peripheral branches are cut.
-    \item \textbf{Modularity Scores:} The community detection algorithm yielded exceptionally high modularity scores (Barcelona: $0.89$, Milan: $0.92$), confirming that the detected "zones" are statistically significant structural clusters rather than random artifacts.
-\end{itemize}
-
-\subsection{Ground Truthing (External Validity)}
-The most significant test of validity is whether the mathematical results correspond to physical reality.
-\begin{itemize}
-    \item \textbf{Milan (Central Hubs):} The nodes with the highest Eigenvector Centrality were identified as \textit{Centrale FS}, \textit{Garibaldi FS}, and \textit{Zara}. These correspond exactly to the city's primary railway and metro interchange hubs, confirming the algorithm correctly identified the "center of gravity" of the network. 
-    \item \textbf{Barcelona (Strategic Corridors):} Interestingly, for Barcelona, the algorithm assigned high influence to the \textit{L9 Sud corridor} (nodes: \textit{Parc Nou, Aeroport T2, Fira}). This aligns with the line's strategic role as a high-capacity connector linking the Airport and Trade Fair centers to the rest of the grid, validating the metric's ability to detect economically critical infrastructure.
 \end{itemize}
 
 
@@ -665,33 +757,76 @@ The most significant test of validity is whether the mathematical results corres
 This project applied Social Network Analysis (SNA) to compare the public transport architectures of Barcelona and Milan, revealing how distinct urban planning philosophies manifest in graph topology.
 
 \subsection{Topological Comparison: Grid vs. Radial}
-The analysis reveals a fundamental structural divergence between the two cities: 
+The analysis reveals a fundamental structural divergence between the two cities. Barcelona functions as a decentralized \textbf{Resilient Mesh}, characterized by 36 distinct communities. The interlocked nature of these communities facilitates high cross-town mobility, reducing the need for passengers to pass through a single central point. Conversely, Milan exhibits a stronger hierarchical \textbf{Efficient Radial} structure, with 47 smaller communities radiating from a dense core. 
 
-\begin{itemize}
-    \item \textbf{Barcelona (The Resilient Mesh):} The network forms a decentralized grid with 36 distinct communities. The "interlocked" nature of these communities suggests a system designed for high cross-town mobility, reducing the need for all passengers to pass through a single central point. 
-    \item \textbf{Milan (The Efficient Radial):} Conversely, Milan exhibits a stronger hierarchical structure with 47 smaller communities radiating from a dense core. The high centrality of stations like \textit{Centrale FS} confirms a system optimized for centripetal flow (moving commuters in and out of the center), which is highly efficient but potentially prone to central congestion.
-\end{itemize}
+While Milan's radial design provides direct access to the city center, the K-core decomposition reveals a deeper internal hierarchy ($k_{max}=3$) compared to Barcelona ($k_{max}=2$). This suggests that while Milan's periphery is sparse, its inner core is significantly denser and more interconnected than Barcelona's linear backbone.
 
-\subsection{Network Robustness}
-The positive assortativity coefficients (Barcelona: $0.13$, Milan: $0.19$) are a key indicator of robustness. They suggest that both cities possess a strong "core backbone" where major lines interconnect directly. This is a desirable trait for resilience; if a suburban branch fails, the core network remains intact and operational, preventing cascading failures.
+\subsection{Navigational Efficiency and Cost}
+A critical finding of this study is the disparity in navigational cost between the two systems. Despite Milan's central density, Barcelona achieves a measurably higher Global Efficiency ($E_{glob} \approx 0.040$) compared to Milan ($E_{glob} \approx 0.030$). This efficiency gap is further quantified by the Average Path Length: a typical journey in Milan requires approximately \textbf{40 stops}, whereas a comparable journey in Barcelona requires only \textbf{31 stops}. This confirms that Barcelona's mesh topology effectively reduces the structural ``cost'' of travel for passengers, offering better interconnectedness relative to network size.
+
+\subsection{Network Robustness and Vulnerability}
+Both cities exhibit positive assortativity coefficients (Barcelona: 0.13, Milan: 0.19), indicating a ``Rich-Club'' phenomenon where major hubs connect to other hubs, forming a resilient backbone. However, the robustness analysis highlights a specific vulnerability in Milan's compartmentalized structure. Under targeted attacks based on Betweenness Centrality, Milan's network degrades significantly faster (AUC 0.163) than Barcelona's (AUC 0.202). This indicates that Milan's high modularity ($Q=0.93$) makes it more fragile to the removal of critical ``bridge'' stations, whereas Barcelona's distributed grid offers alternative pathways that preserve global connectivity even when key corridors are disrupted.
 
 \subsection{Final Implications}
-Our results suggest that while Milan’s radial system provides direct access to the city center, its reliance on a few "super-hubs" (like \textit{Garibaldi} and \textit{Centrale}) creates potential bottlenecks. Barcelona’s grid system, highlighted by the prominence of the \textit{L9 Airport connector} in our centrality analysis, distributes importance more evenly across strategic corridors. Future planning for Milan could benefit from "orbital" lines to mimic Barcelona’s mesh-like resilience, reducing pressure on the historic center. 
+Our results suggest that while Milan's radial system is optimized for centripetal flow, its reliance on a few ``super-hubs'' (like Garibaldi and Centrale) and its longer average path lengths create potential bottlenecks. Barcelona's grid system, highlighted by the strategic prominence of the L9 Airport connector, distributes importance more evenly. Future planning for Milan could benefit from ``orbital'' lines to mimic Barcelona's mesh-like resilience, thereby reducing the path length for peripheral journeys and improving resilience against targeted disruptions.
 
 
-\begin{thebibliography}{9}
+\section{Critique}
+
+This section reflects on the extent to which our work addressed the initial research problem and discusses potential improvements in methodology and data sources.
+
+\subsection{Evaluation of Problem Solving}
+Our analysis successfully provided a quantitative, topology-based comparison between Milan and Barcelona, answering the core research question regarding their structural differences. The SNA approach effectively distinguished between Barcelona's decentralized "mesh" topology and Milan's hierarchical "radial" structure. The application of metrics such as Modularity and Global Efficiency offered concrete evidence that network design significantly impacts theoretical navigability and resilience.
+
+However, the solution is partial in terms of real-world mobility. While we solved the problem of \textit{structural characterization}, we did not fully address the \textit{operational experience} of passengers. Our findings regarding efficiency are theoretical upper bounds based on graph topology, assuming ideal conditions without delays, transfer penalties, or crowding.
+
+\subsection{Limitations and Alternative Approaches}
+Several aspects of the study could be improved to provide a more comprehensive answer to the research problems:
+
+\begin{itemize}
+    \item \textbf{Data Dynamics:} The reliance on static GTFS schedules ignores the stochastic nature of public transport. Incorporating real-time AVL (Automatic Vehicle Location) data would allow us to measure reliability and actual travel times rather than just scheduled frequency. Additionally, integrating demographic data (population density around nodes) would enable an analysis of service equity, determining if the "efficient" parts of the network actually serve the most people.
+    
+    \item \textbf{Methodological Refinements:} Our graph model treated all transfers as equal. A "Time-Expanded Graph" or a "Space-P" representation could better model the temporal cost of transfers, including waiting times which vary by time of day. 
+    
+    \item \textbf{Alternative Measures:} To better understand resilience, we could apply spectral analysis (studying the eigenvalues of the Laplacian matrix) to assess the network's synchronization properties and algebraic connectivity, providing a more robust measure of how easily the network can fracture.
+\end{itemize}
+
+\begin{thebibliography}{99}
+
 \bibitem{a}
-GTFS Documentation: \url{https://gtfs.org}
+Lin, Z., et al. (2021).
+\textit{Research on Optimization of Urban Public Transport Network
+Based on Complex Network Theory}.
+Symmetry Journal.
+
 \bibitem{b}
-pandas: \url{https://pandas.com}
+General Transit Feed Specification (GTFS).
+\url{https://gtfs.org/}
 
 \bibitem{c}
-pandas: \url{https://pandas.com}
+Transitland: An Open Data Aggregator.
+\url{https://www.transit.land/}
+
+\bibitem{d}
+Transports Metropolitans de Barcelona (TMB).
+\url{https://www.tmb.cat/}
+
+\bibitem{e}
+Azienda Trasporti Milanesi (ATM).
+\url{https://www.atm.it/}
+
+\bibitem{f}
+Pandas: Python Data Analysis Library.
+\url{https://pandas.pydata.org/}
+
+\bibitem{g}
+NetworkX: Network Analysis in Python Library. \url{https://networkx.org/}
 
 \bibitem{vonferber}
 C.~von Ferber, T.~Holovatch, Y.~Holovatch, and V.~Palchykov.
 \textit{Public transport networks: empirical analysis and modeling}.
 arXiv:0803.3514, 2008. Available at: \url{https://arxiv.org/abs/0803.3514}
+
 \end{thebibliography}
 
 \end{document}
