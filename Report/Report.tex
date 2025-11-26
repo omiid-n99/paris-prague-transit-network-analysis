@@ -1,7 +1,7 @@
 \documentclass[12pt]{article}
 
 
-\usepackage[utf8]{inputenc} % Handles special characters
+\usepackage[utf8]{inputenc} 
 \usepackage[T1]{fontenc}    % Proper font encoding
 \usepackage[english]{babel} % English language support
 \usepackage[a4paper, top=2.5cm, bottom=2.5cm, left=2.5cm, right=2.5cm]{geometry} % Margins
@@ -557,9 +557,25 @@ To visualize where these "core" nodes are located physically, we mapped the stat
 
 \subsubsection{Modularity (Community Detection)}
 
-To understand the natural substructures of the transit networks, modularity-based community detection was applied. This analysis groups stops that are more densely connected to each other than to the rest of the network, revealing functional clusters that often correspond to geographic neighborhoods or distinct transit lines. In both cities, communities align closely with major transport corridors and administrative zones, illustrating the interplay between urban planning and network topology.
+To understand the natural substructures of the transit networks, modularity-based community detection was applied.
+This analysis groups stops that are more densely connected to each other than to the rest of the network, revealing functional clusters that often correspond to geographic neighborhoods or distinct transit lines.
+In both cities, communities align closely with major transport corridors and administrative zones, illustrating the interplay between urban planning and network topology.
 
-\begin{figure}[h!]
+
+\begin{table}[h!]
+\centering
+\begin{tabular}{|l|c|c|}
+\hline
+\textbf{City} & \textbf{Number of Communities} & \textbf{Modularity ($Q$)} \\ \hline
+Barcelona     & 40                             & 0.8901                    \\ \hline
+Milan         & 50           
+                  & 0.9273                    \\ \hline
+\end{tabular}
+\caption{Results of Greedy Modularity optimization for Barcelona and Milan.}
+\label{tab:modularity}
+\end{table}
+
+\begin{figure}[H]
     \centering
     \begin{subfigure}[b]{0.48\textwidth}
         \centering
@@ -574,21 +590,10 @@ To understand the natural substructures of the transit networks, modularity-base
         \caption{Milan Community Structure}
         \label{fig:mil_mod}
     \end{subfigure}
-    \caption{Visualization of network communities detected by the Greedy Modularity algorithm. Colors indicate distinct communities.}
+    \caption{Visualization of network communities 
+detected by the Greedy Modularity algorithm. Colors indicate distinct communities.}
     \label{fig:modularity_plots}
 \end{figure}
-
-\begin{table}[h!]
-\centering
-\begin{tabular}{|l|c|c|}
-\hline
-\textbf{City} & \textbf{Number of Communities} & \textbf{Modularity ($Q$)} \\ \hline
-Barcelona     & 40                             & 0.8901                    \\ \hline
-Milan         & 50                             & 0.9273                    \\ \hline
-\end{tabular}
-\caption{Results of Greedy Modularity optimization for Barcelona and Milan.}
-\label{tab:modularity}
-\end{table}
 
 
 \subsection{Efficiency Measures}
